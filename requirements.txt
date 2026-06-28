@@ -1,0 +1,42 @@
+# ================================
+#  Core Dependencies
+# ================================
+requests==2.32.3            # HTTP client (health-check vLLM /v1/models, backend calls)
+ujson==5.10.0               # Ultra-fast JSON parsing
+
+# ================================
+#  Web Framework (FastAPI stack)
+# ================================
+fastapi==0.111.0            # Main system service API (management, health, control)
+uvicorn[standard]==0.30.0   # ASGI server for FastAPI system service
+
+# ================================
+#  Security / Tokens
+# ================================
+pyjwt==2.8.0                # JWT for API key / token validation (if needed)
+
+# ================================
+#  Async / Performance
+# ================================
+gevent==24.2.1              # Optional async worker support (Gunicorn worker_class=gevent)
+greenlet==3.0.3             # Required by gevent
+
+# ================================
+#  System Utilities
+# ================================
+psutil==6.0.0               # System metrics (CPU, RAM) if needed
+
+# ================================
+#  Data Validation / Models
+# ================================
+pydantic==2.7.1             # FastAPI model validation
+
+# ================================
+#  CORS / Middleware / Base
+# ================================
+starlette==0.37.2           # FastAPI base framework (CORS, middleware, routing)
+
+# ================================
+#  Logging / Monitoring
+# ================================
+loguru==0.7.2               # Clean, structured logging
