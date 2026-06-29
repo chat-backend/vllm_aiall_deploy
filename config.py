@@ -1,7 +1,7 @@
 # config.py
 #!/usr/bin/env python3
 """
-vLLM PRO+ Gateway – System Configuration (V4-PRODUCTION-CROSSPLATFORM)
+AIALL vLLM Gateway – System Configuration (V4-PRODUCTION-CROSSPLATFORM)
 ----------------------------------------------------------------------
 - API chuẩn OpenAI (vLLM)
 - Không prefix
@@ -18,7 +18,7 @@ from typing import List
 import os
 import platform
 
-print("[CONFIG] Loaded vLLM PRO+ Gateway configuration (V4-PRODUCTION-CROSSPLATFORM)")
+print("[CONFIG] Loaded AIALL vLLM Gateway configuration (V4-PRODUCTION-CROSSPLATFORM)")
 
 # ============================================================
 #  DOMAIN & EMAIL CONFIG
@@ -31,10 +31,12 @@ EMAIL: str = "openaimanage@gmail.com"
 #  BASE DIRECTORIES (CROSS-PLATFORM)
 # ============================================================
 
-if platform.system().lower().startswith("win"):
-    CONFIG_DIR = Path("vllm_config")  # local folder for Windows dev
+IS_WINDOWS = platform.system().lower().startswith("win")
+
+if IS_WINDOWS:
+    CONFIG_DIR = Path("vllm_config")  # Windows local dev
 else:
-    CONFIG_DIR = Path("/etc/vllm")    # production path for Linux
+    CONFIG_DIR = Path("/etc/vllm")    # Linux production
 
 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -43,13 +45,13 @@ API_KEY_FILE = CONFIG_DIR / "api_key"
 BACKENDS_CONFIG = CONFIG_DIR / "backends.conf"
 DRAIN_CONFIG = CONFIG_DIR / "backends.drain"
 
-DEFAULT_BACKENDS = ["http://127.0.0.1:8000"]
+DEFAULT_BACKENDS = ["127.0.0.1:8000"]
 
 # ============================================================
 #  NGINX CONFIG PATHS (Linux only)
 # ============================================================
 
-if platform.system().lower().startswith("win"):
+if IS_WINDOWS:
     UPSTREAM_FILE = Path("nginx_upstream.conf")
     LOG_FILE = Path("vllm_deploy.log")
 else:
@@ -66,6 +68,7 @@ class ProjectConfig:
 
     base_url: str = os.getenv("VLLM_BASE_URL", "https://api.aiallplatform.com")
 
+    # API chuẩn OpenAI/vLLM
     api_chat: str = "/v1/chat/completions"
     api_completion: str = "/v1/completions"
     api_models: str = "/v1/models"
@@ -78,9 +81,11 @@ class ProjectConfig:
     default_temperature: float = 0.7
     default_top_p: float = 0.9
 
+    # Chuẩn hóa path
     def normalize(self, path: str) -> str:
         return path if path.startswith("/") else f"/{path}"
 
+    # Tạo URL đầy đủ cho người dùng cuối
     def full(self, path: str) -> str:
         return f"{self.base_url}{self.normalize(path)}"
 
@@ -96,10 +101,12 @@ class ProjectConfig:
     def url_models(self) -> str:
         return self.full(self.api_models)
 
+    # Tạo URL backend vLLM
     def backend_url(self, backend: str, path: str) -> str:
         backend = backend if backend.startswith("http") else f"http://{backend}"
         return f"{backend}{self.normalize(path)}"
 
+    # URL health-check backend
     def backend_health_url(self, backend: str) -> str:
         return self.backend_url(backend, self.api_models)
 
@@ -135,4 +142,5 @@ __all__ = [
     "LOG_FILE",
     "ProjectConfig",
 ]
+
 
